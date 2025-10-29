@@ -1,0 +1,74 @@
+<a href="Cadastro.html"><button type="button">Cadastro</button></a>
+<h3>Lista de Alunos</h3>
+<!-- cria uma tabela -->
+<table id="tabelaAlunos" border="1">
+    <!-- cabeçalho da tabela -->
+    <thead>
+        <link rel="stylesheet" href="style.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- linha da tabela -->
+        <tr>
+            <!-- coluna da tabela -->
+            <th>Nome</th>
+            <th>Nascimento</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+            <th>Excluir</th>
+            <th>Atualizar</th>
+        </tr>
+
+    </thead>
+    <!-- corpo da tabela -->
+    <tbody>
+        <!-- Linhas preenchidas pelo JavaScript -->
+    </tbody>
+</table>
+
+<script>
+    var token = "65759b9ecf9e4ea4828e5d900361ff09";
+
+    fetch("https://crudcrud.com/api/" + token + "/pessoas")
+        .then(response => response.json())
+        .then(data => botaTabela(data))
+        .catch(error => console.error("Erro no GET:", error));
+
+    function botaTabela(pessoas) {
+        var tabela = document.getElementById("tabelaAlunos").getElementsByTagName("tbody")[0];
+        tabela.innerHTML = "";  // limpa tabela antes de preencher
+
+        pessoas.forEach(function(elemento) {
+            var linha = tabela.insertRow();
+            var celulaNome = linha.insertCell(0);
+            var celulaNascimento = linha.insertCell(1);
+            var celulaTelefone = linha.insertCell(2);
+            var celulaEndereco = linha.insertCell(3);
+            var celulaExcluir = linha.insertCell(4);
+            var celulaAtualizar = linha.insertCell(5);
+            
+
+            celulaNome.innerHTML = elemento.nome;
+            celulaNascimento.innerHTML = elemento.nascimento;
+            celulaTelefone.innerHTML = elemento.telefone;
+            celulaEndereco.innerHTML = elemento.endereco;
+            celulaExcluir.innerHTML = '<button onclick="excluir(\'' + elemento._id + '\')">Excluir</button>';
+            celulaAtualizar.innerHTML =   '<button onclick="atualizar(\'' + elemento._id + '\',\''+elemento.nome+'\',\''+elemento.telefone+'\',\''+elemento.endereco+'\',\''+elemento.nascimento+'\')">Atualizar</button>';
+        });
+    }
+    function atualizar(id,nome,tel,end,data){
+            window.location.href = "AtualizarPessoa.html?id="+id+"&nome="+nome+"&tel="+tel+"&end="+end+"&data="+data
+        }
+
+        function excluir(id) {
+        fetch("https://crudcrud.com/api/" + token + "/pessoas/" + id, {
+            method: "DELETE"
+        })
+        .then(() => {
+            console.log("Aluno excluído com ID:", id);
+            location.reload(); 
+            //Atualiza a pagina para recarregar os dados
+        })
+        .catch(err => console.error("Erro ao excluir aluno:", err));
+    }
+
+</script>
